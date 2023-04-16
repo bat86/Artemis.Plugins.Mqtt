@@ -1,0 +1,70 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Artemis.Plugins.Mqtt.Screens"
+             mc:Ignorable="d" Width="450"
+             x:Class="Artemis.Plugins.Mqtt.Screens.ServerConnectionDialogView"
+             x:DataType="local:ServerConnectionDialogViewModel">
+
+    <StackPanel Margin="16">
+        <TextBlock  Text="Edit Server Connection" />
+
+        <TextBox
+            Watermark="Display Name"
+            Text="{CompiledBinding DisplayName}" />
+
+        <Grid Margin="0 8 0 16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="24" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                Grid.Column="0"
+                Watermark="Server URL"
+                Text="{CompiledBinding ServerUrl}" />
+
+            <TextBox
+                Grid.Column="2"
+                Watermark="Server Port"
+                Text="{CompiledBinding ServerPort}" />
+        </Grid>
+
+        <TextBox
+            Watermark="Client ID"
+            Text="{CompiledBinding ClientId}" />
+
+        <Grid Margin="0 8 0 16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="24" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                Grid.Column="0"
+                Watermark="Username"
+                Text="{CompiledBinding Username}" />
+
+            <TextBox
+                Grid.Column="2"
+                Watermark="Password"
+                Text="{CompiledBinding Password}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button
+                Command="{CompiledBinding Cancel}"
+                Content="Cancel"
+                IsCancel="True"
+                Margin="0 8 8 0" />
+            <Button
+                Command="{CompiledBinding Save}"
+                Content="Save"
+                IsDefault="True"
+                Margin="0 8 8 0" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,79 @@
+﻿<UserControl 
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Artemis.UI.Shared.Converters;assembly=Artemis.UI.Shared"
+             xmlns:local="clr-namespace:Artemis.Plugins.Mqtt.Screens"
+             x:Class="Artemis.Plugins.Mqtt.Screens.StructureNodeConfigurationDialogView"
+             x:DataType="local:StructureNodeConfigurationDialogViewModel"
+             mc:Ignorable="d" Width="450">
+    <UserControl.Resources>
+        <converters:TypeToStringConverter x:Key="TypeToStringConverter" />
+    </UserControl.Resources>
+
+    <StackPanel Margin="16">
+        <TextBlock Text="Edit Dynamic Data Model Node" />
+
+        <TextBox
+            Margin="0 8 0 16"
+            Watermark="Data model label"
+            Text="{CompiledBinding Label}" />
+
+        <Grid
+            Margin="0 8 0 16"
+            IsVisible="{CompiledBinding IsValue}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="24" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <ComboBox
+                DisplayMemberBinding="{CompiledBinding Path=DisplayName}"
+                Grid.Column="0"
+                ItemsSource="{CompiledBinding ServerConnectionsSetting.Value}"
+                SelectedValue="{CompiledBinding Server}"
+                SelectedValueBinding="{CompiledBinding Path=ServerId}"
+                VerticalAlignment="Bottom" />
+
+            <TextBox
+                Grid.Column="2"
+                Watermark="Topic"
+                Text="{CompiledBinding Topic}" />
+        </Grid>
+
+        <ComboBox
+            ItemsSource="{CompiledBinding SupportedValueTypes}"
+            Margin="0 8 0 16"
+            SelectedItem="{CompiledBinding Type}"
+            IsVisible="{CompiledBinding IsValue}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{CompiledBinding ., Converter={StaticResource TypeToStringConverter}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <DockPanel IsVisible="{CompiledBinding IsValue}">
+            <ToggleButton
+                DockPanel.Dock="Right"
+                IsChecked="{CompiledBinding GenerateEvent}"/>
+            <TextBlock
+                Text="Generate change event" />
+        </DockPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button
+                Command="{CompiledBinding Cancel}"
+                Content="Cancel"
+                IsCancel="True"
+                Margin="0 8 8 0" />
+            <Button
+                Command="{CompiledBinding Save}"
+                Content="Confirm"
+                IsDefault="True"
+                Margin="0 8 8 0" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>
