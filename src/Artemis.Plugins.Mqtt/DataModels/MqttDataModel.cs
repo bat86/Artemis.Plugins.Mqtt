@@ -5,18 +5,18 @@ using Artemis.Plugins.Mqtt.DataModels.Dynamic;
 
 namespace Artemis.Plugins.Mqtt.DataModels;
 
-public class RootDataModel : DataModel
+public class MqttDataModel : DataModel
 {
     public MqttConnectorStatusCollection Statuses { get; } = new();
 
-    public NodeDataModel Mqtt { get; } = new();
+    public NodeDataModel Root { get; } = new();
 
     /// <summary>
     ///     Handles an incoming message for a particular server and topic.
     /// </summary>
     internal void HandleMessage(Guid sourceServer, string topic, object data)
     {
-        Mqtt.PropagateValue(sourceServer, topic, data);
+        Root.PropagateValue(sourceServer, topic, data);
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public class RootDataModel : DataModel
     internal void UpdateDataModel(StructureDefinitionNode dataModelStructure)
     {
         ClearDynamicChildren();
-        Mqtt.CreateStructure(dataModelStructure);
+        Root.CreateStructure(dataModelStructure);
     }
 }
 

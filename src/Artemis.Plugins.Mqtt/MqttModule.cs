@@ -13,14 +13,14 @@ using MQTTnet.Client.Disconnecting;
 
 namespace Artemis.Plugins.Mqtt;
 
-public class MqttDataModelExpansion : Module<RootDataModel>
+public class MqttModule : Module<MqttDataModel>
 {
     private readonly List<MqttConnector> connectors = new();
     private readonly PluginSetting<StructureDefinitionNode> dynamicDataModelStructureSetting;
 
     private readonly PluginSetting<List<MqttConnectionSettings>> serverConnectionsSetting;
 
-    public MqttDataModelExpansion(PluginSettings settings)
+    public MqttModule(PluginSettings settings)
     {
         serverConnectionsSetting = settings.GetSetting("ServerConnections", new List<MqttConnectionSettings>());
         serverConnectionsSetting.PropertyChanged += OnSeverConnectionListChanged;
@@ -152,11 +152,14 @@ public class MqttDataModelExpansion : Module<RootDataModel>
 
     protected override void Dispose(bool disposing)
     {
-        connectors.ForEach(connector =>
+        foreach (var connector in connectors)
         {
             connector.MessageReceived -= OnMqttClientMessageReceived;
+            connector.Connected -= OnMqttClientConnected;
+            connector.Disconnected -= OnMqttClientDisconnected;
             connector.Dispose();
-        });
+        }
+
         connectors.Clear();
     }
 }

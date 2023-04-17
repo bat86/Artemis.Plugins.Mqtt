@@ -8,7 +8,7 @@ namespace Artemis.Plugins.Mqtt.Screens;
 public class ServerConnectionDialogViewModel : DialogViewModelBase<DialogResult>
 {
     private readonly MqttConnectionSettings _connectionSettings;
-    private string _displayName;
+    private string _connectionDisplayName;
     private string _serverUrl;
     private int _serverPort;
     private string _clientId;
@@ -18,14 +18,14 @@ public class ServerConnectionDialogViewModel : DialogViewModelBase<DialogResult>
     public ServerConnectionDialogViewModel(MqttConnectionSettings connectionSettings)
     {
         _connectionSettings = connectionSettings;
-        _displayName = connectionSettings.DisplayName;
+        _connectionDisplayName = connectionSettings.DisplayName;
         _serverUrl = connectionSettings.ServerUrl;
         _serverPort = connectionSettings.ServerPort;
         _clientId = connectionSettings.ClientId;
         _username = connectionSettings.Username;
         _password = connectionSettings.Password;
 
-        this.ValidationRule(vm => vm.DisplayName, s => !string.IsNullOrWhiteSpace(s), "Enter a name for this server");
+        this.ValidationRule(vm => vm.ConnectionDisplayName, s => !string.IsNullOrWhiteSpace(s), "Enter a name for this server");
         this.ValidationRule(vm => vm.ServerUrl, s => !string.IsNullOrWhiteSpace(s), "Enter a server URL");
         this.ValidationRule(vm => vm.ServerPort, port => port is > 0 and < 65536, "Enter a valid port number");
         this.ValidationRule(vm => vm.ClientId, s => !string.IsNullOrWhiteSpace(s), "Enter a client ID");
@@ -38,10 +38,10 @@ public class ServerConnectionDialogViewModel : DialogViewModelBase<DialogResult>
     
     public ReactiveCommand<Unit, Unit> Cancel { get; }
     
-    public string DisplayName
+    public string ConnectionDisplayName
     {
-        get => _displayName;
-        set => RaiseAndSetIfChanged(ref _displayName, value);
+        get => _connectionDisplayName;
+        set => RaiseAndSetIfChanged(ref _connectionDisplayName, value);
     }
     
     public string ServerUrl
@@ -79,7 +79,7 @@ public class ServerConnectionDialogViewModel : DialogViewModelBase<DialogResult>
         if (HasErrors)
             return;
         
-        _connectionSettings.DisplayName = DisplayName;
+        _connectionSettings.DisplayName = ConnectionDisplayName;
         _connectionSettings.ServerUrl = ServerUrl;
         _connectionSettings.ServerPort = ServerPort;
         _connectionSettings.ClientId = ClientId;
