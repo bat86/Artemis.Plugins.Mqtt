@@ -36,7 +36,7 @@ public class MqttModule : Module<MqttDataModel>
 
     public override async void Enable()
     {
-        DataModel.UpdateDataModel(dynamicDataModelStructureSetting.Value);
+        DataModel.Root.CreateStructure(dynamicDataModelStructureSetting.Value);
         DataModel.Statuses.UpdateConnectorList(serverConnectionsSetting.Value);
         await RestartConnectors();
     }
@@ -127,7 +127,7 @@ public class MqttModule : Module<MqttDataModel>
             return;
         
         _logger.Debug("Received message on connector {Connector} for topic {Topic}: {Message}", connector.ServerId,e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
-        DataModel.HandleMessage(connector.ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
+        DataModel.Root.PropagateValue(connector.ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
     }
 
     private void OnMqttClientConnected(object sender, MqttClientConnectedEventArgs e)
@@ -155,7 +155,7 @@ public class MqttModule : Module<MqttDataModel>
     private async void OnDataModelStructureChanged(object sender, PropertyChangedEventArgs e)
     {
         // Rebuild the Artemis Data Model with the new structure
-        DataModel.UpdateDataModel(dynamicDataModelStructureSetting.Value);
+        DataModel.Root.CreateStructure(dynamicDataModelStructureSetting.Value);
 
         // Restart the Mqtt client in case it needs to change which topics it's subscribed to
         await RestartConnectors();
