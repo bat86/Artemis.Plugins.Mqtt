@@ -10,6 +10,7 @@ using Artemis.Plugins.Mqtt.DataModels.Dynamic;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
+using Serilog;
 
 namespace Artemis.Plugins.Mqtt;
 
@@ -19,9 +20,11 @@ public class MqttModule : Module<MqttDataModel>
     private readonly PluginSetting<StructureDefinitionNode> dynamicDataModelStructureSetting;
 
     private readonly PluginSetting<List<MqttConnectionSettings>> serverConnectionsSetting;
+    private readonly ILogger _logger;
 
-    public MqttModule(PluginSettings settings)
+    public MqttModule(PluginSettings settings, ILogger logger)
     {
+        _logger = logger;
         serverConnectionsSetting = settings.GetSetting("ServerConnections", new List<MqttConnectionSettings>());
         serverConnectionsSetting.PropertyChanged += OnSeverConnectionListChanged;
 
@@ -79,7 +82,6 @@ public class MqttModule : Module<MqttDataModel>
             }
         }
 
-
         // Calculate which topics should be listened to by which servers
         var serverTopicMap = new Dictionary<Guid?, HashSet<string>>();
         var nodesToSearch = new Queue<StructureDefinitionNode>();
@@ -121,18 +123,27 @@ public class MqttModule : Module<MqttDataModel>
 
     private void OnMqttClientMessageReceived(object sender, MqttApplicationMessageReceivedEventArgs e)
     {
-        // Pass incoming messages to the root DataModel's HandleMessage method.
-        DataModel.HandleMessage(((MqttConnector)sender).ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
+        if (sender is not MqttConnector connector)
+            return;
+        
+        _logger.Debug("Received message on connector {Connector} for topic {Topic}: {Message}", connector.ServerId,e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
+        DataModel.HandleMessage(connector.ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
     }
 
     private void OnMqttClientConnected(object sender, MqttClientConnectedEventArgs e)
     {
-        DataModel.Statuses[((MqttConnector)sender).ServerId].IsConnected = true;
+        if (sender is not MqttConnector connector)
+            return;
+        
+        DataModel.Statuses[connector.ServerId].IsConnected = true;
     }
 
     private void OnMqttClientDisconnected(object sender, MqttClientDisconnectedEventArgs e)
     {
-        DataModel.Statuses[((MqttConnector)sender).ServerId].IsConnected = false;
+        if (sender is not MqttConnector connector)
+            return;
+        
+        DataModel.Statuses[connector.ServerId].IsConnected = false;
     }
 
     private void OnSeverConnectionListChanged(object sender, PropertyChangedEventArgs e)

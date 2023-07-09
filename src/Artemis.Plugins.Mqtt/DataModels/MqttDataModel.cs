@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Artemis.Core.Modules;
 using Artemis.Plugins.Mqtt.DataModels.Dynamic;
 
@@ -24,17 +26,19 @@ public class MqttDataModel : DataModel
     /// </summary>
     internal void UpdateDataModel(StructureDefinitionNode dataModelStructure)
     {
-        ClearDynamicChildren();
         Root.CreateStructure(dataModelStructure);
     }
 }
 
 public class NodeDataModel : DataModel
 {
-    private static ConcurrentDictionary<string, DynamicChild> _allDynamicChildren = new();
+    private static readonly ConcurrentDictionary<string, DynamicChild> _allDynamicChildren = new();
 
     internal void CreateStructure(StructureDefinitionNode dataModelStructure)
     {
+        ClearDynamicChildren();
+        _allDynamicChildren.Clear();
+        
         foreach (var childDefinition in dataModelStructure.Children)
         {
             var id = GetNodeId(childDefinition.Server ?? Guid.NewGuid(), childDefinition.Topic);

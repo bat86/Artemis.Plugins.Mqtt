@@ -83,6 +83,8 @@ public class ServerConnectionDialogViewModel : DialogViewModelBase<DialogResult>
         _connectionSettings.ServerUrl = ServerUrl;
         _connectionSettings.ServerPort = ServerPort;
         _connectionSettings.ClientId = ClientId;
+        _connectionSettings.Username = Username;
+        _connectionSettings.Password = Password;
         
         Close(DialogResult.Save);
     }
