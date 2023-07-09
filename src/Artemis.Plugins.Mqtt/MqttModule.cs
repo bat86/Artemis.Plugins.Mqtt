@@ -122,17 +122,17 @@ public class MqttModule : Module<MqttDataModel>
     private void OnMqttClientMessageReceived(object sender, MqttApplicationMessageReceivedEventArgs e)
     {
         // Pass incoming messages to the root DataModel's HandleMessage method.
-        DataModel.HandleMessage((sender as MqttConnector).ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
+        DataModel.HandleMessage(((MqttConnector)sender).ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
     }
 
     private void OnMqttClientConnected(object sender, MqttClientConnectedEventArgs e)
     {
-        DataModel.Statuses[(sender as MqttConnector).ServerId].IsConnected = true;
+        DataModel.Statuses[((MqttConnector)sender).ServerId].IsConnected = true;
     }
 
     private void OnMqttClientDisconnected(object sender, MqttClientDisconnectedEventArgs e)
     {
-        DataModel.Statuses[(sender as MqttConnector).ServerId].IsConnected = false;
+        DataModel.Statuses[((MqttConnector)sender).ServerId].IsConnected = false;
     }
 
     private void OnSeverConnectionListChanged(object sender, PropertyChangedEventArgs e)
@@ -146,7 +146,7 @@ public class MqttModule : Module<MqttDataModel>
         // Rebuild the Artemis Data Model with the new structure
         DataModel.UpdateDataModel(dynamicDataModelStructureSetting.Value);
 
-        // Restart the Mqtt client incase it needs to change which topics it's subscribed to
+        // Restart the Mqtt client in case it needs to change which topics it's subscribed to
         await RestartConnectors();
     }
 

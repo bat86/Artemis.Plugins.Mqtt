@@ -29,11 +29,6 @@ public class StructureDefinitionNode
     public Type Type { get; set; }
 
     /// <summary>
-    ///     Whether or not a change event will be generated for the property represented by this node.
-    /// </summary>
-    public bool GenerateEvent { get; set; }
-
-    /// <summary>
     ///     Any children this node has.
     /// </summary>
     public List<StructureDefinitionNode> Children { get; set; }

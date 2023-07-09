@@ -16,7 +16,6 @@ public class StructureNodeViewModel : ViewModelBase
 {
     private readonly IWindowService _windowService;
     private readonly StructureNodeViewModel parent;
-    private bool generateEvent;
 
     private string label;
     private Guid? server;
@@ -42,7 +41,6 @@ public class StructureNodeViewModel : ViewModelBase
         server = model.Server;
         topic = model.Topic;
         type = model.Type;
-        generateEvent = model.GenerateEvent;
         if (model.Children != null)
             Children = new ObservableCollection<StructureNodeViewModel>(
                 model.Children.Select(c => new StructureNodeViewModel(windowService, this, c))
@@ -61,7 +59,6 @@ public class StructureNodeViewModel : ViewModelBase
             Server = server,
             Topic = topic,
             Type = type,
-            GenerateEvent = generateEvent,
             Children = IsGroup ? new List<StructureDefinitionNode>(Children.Select(c => c.ViewModelToModel())) : null
         };
     }
@@ -92,12 +89,6 @@ public class StructureNodeViewModel : ViewModelBase
         set => RaiseAndSetIfChanged(ref type, value);
     }
 
-    public bool GenerateEvent
-    {
-        get => generateEvent;
-        set => RaiseAndSetIfChanged(ref generateEvent, value);
-    }
-
     public ObservableCollection<StructureNodeViewModel> Children { get; init; }
 
     public bool IsGroup => Children != null;
@@ -117,7 +108,6 @@ public class StructureNodeViewModel : ViewModelBase
         Server = r.Server;
         Topic = r.Topic;
         Type = r.Type;
-        generateEvent = r.GenerateEvent;
     }
 
     /// <summary>
@@ -158,7 +148,6 @@ public class StructureNodeViewModel : ViewModelBase
             Server = isGroup ? null : r.Server,
             Topic = isGroup ? null : r.Topic,
             Type = isGroup ? null : r.Type,
-            GenerateEvent = !isGroup && generateEvent,
             Children = isGroup ? new ObservableCollection<StructureNodeViewModel>() : null
         });
     }

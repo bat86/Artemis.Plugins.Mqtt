@@ -10,17 +10,17 @@ namespace Artemis.Plugins.Mqtt.DataModels;
 /// </summary>
 public class MqttConnectorStatusCollection : IEnumerable<MqttConnectorStatus>
 {
-    private readonly Dictionary<Guid, MqttConnectorStatus> statuses = new();
+    private readonly Dictionary<Guid, MqttConnectorStatus> _statuses = new();
 
     /// <summary>
     ///     Fetches the status object for a single MQTT server connector.
     /// </summary>
-    internal MqttConnectorStatus this[Guid serverId] => statuses[serverId];
+    internal MqttConnectorStatus this[Guid serverId] => _statuses[serverId];
 
     // IEnumerable methods for data model
     public IEnumerator<MqttConnectorStatus> GetEnumerator()
     {
-        return statuses.Values.GetEnumerator();
+        return _statuses.Values.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -34,8 +34,8 @@ public class MqttConnectorStatusCollection : IEnumerable<MqttConnectorStatus>
     /// <param name="serverList"></param>
     internal void UpdateConnectorList(List<MqttConnectionSettings> serverList)
     {
-        statuses.Clear();
+        _statuses.Clear();
         foreach (var server in serverList)
-            statuses.Add(server.ServerId, new MqttConnectorStatus(server.DisplayName));
+            _statuses.Add(server.ServerId, new MqttConnectorStatus(server.DisplayName));
     }
 }
