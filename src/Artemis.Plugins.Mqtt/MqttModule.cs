@@ -37,6 +37,7 @@ public class MqttModule : Module<MqttDataModel>
     {
         DataModel.Root.CreateStructure(dynamicDataModelStructureSetting.Value);
         DataModel.Statuses.UpdateConnectorList(serverConnectionsSetting.Value);
+        DataModel.Servers.CreateServers(serverConnectionsSetting.Value);
         await RestartConnectors();
     }
 
@@ -127,6 +128,7 @@ public class MqttModule : Module<MqttDataModel>
         
         _logger.Debug("Received message on connector {Connector} for topic {Topic}: {Message}", connector.ServerId,e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
         DataModel.Root.PropagateValue(connector.ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
+        DataModel.Servers.PropagateValue(connector.ServerId, e.ApplicationMessage.Topic, e.ApplicationMessage.ConvertPayloadToString());
     }
 
     private void OnMqttClientConnected(object sender, MqttClientConnectedEventArgs e)
@@ -149,6 +151,7 @@ public class MqttModule : Module<MqttDataModel>
     {
         RestartConnectors();
         DataModel.Statuses.UpdateConnectorList(serverConnectionsSetting.Value);
+        DataModel.Servers.CreateServers(serverConnectionsSetting.Value);
     }
 
     private async void OnDataModelStructureChanged(object sender, PropertyChangedEventArgs e)
