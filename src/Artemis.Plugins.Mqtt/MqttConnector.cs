@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MQTTnet;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
+using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Artemis.Plugins.Mqtt;
@@ -21,9 +19,9 @@ public sealed class MqttConnector : IDisposable
     public MqttConnector()
     {
         client = clientFactory.CreateManagedMqttClient();
-        client.UseApplicationMessageReceivedHandler(OnClientMessageReceived);
-        client.UseConnectedHandler(OnClientConnected);
-        client.UseDisconnectedHandler(OnClientDisconnected);
+        client.ApplicationMessageReceivedAsync += OnClientMessageReceived;
+        client.ConnectedAsync += OnClientConnected;
+        client.DisconnectedAsync += OnClientDisconnected;
     }
 
     /// <summary>
@@ -92,20 +90,23 @@ public sealed class MqttConnector : IDisposable
         return client.StopAsync();
     }
 
-    private void OnClientMessageReceived(MqttApplicationMessageReceivedEventArgs e)
+    private Task OnClientMessageReceived(MqttApplicationMessageReceivedEventArgs e)
     {
         MessageReceived?.Invoke(this, e);
+        return Task.CompletedTask;
     }
 
-    private void OnClientConnected(MqttClientConnectedEventArgs e)
+    private Task OnClientConnected(MqttClientConnectedEventArgs e)
     {
         IsConnected = true;
         Connected?.Invoke(this, e);
+        return Task.CompletedTask;
     }
 
-    private void OnClientDisconnected(MqttClientDisconnectedEventArgs e)
+    private Task OnClientDisconnected(MqttClientDisconnectedEventArgs e)
     {
         IsConnected = false;
         Disconnected?.Invoke(this, e);
+        return Task.CompletedTask;
     }
 }

@@ -8,8 +8,7 @@ using Artemis.Core.Modules;
 using Artemis.Plugins.Mqtt.DataModels;
 using Artemis.Plugins.Mqtt.DataModels.Dynamic;
 using MQTTnet;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
+using MQTTnet.Client;
 using Serilog;
 
 namespace Artemis.Plugins.Mqtt;
