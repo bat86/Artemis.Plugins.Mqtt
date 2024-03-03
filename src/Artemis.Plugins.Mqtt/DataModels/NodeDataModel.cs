@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using Artemis.Core.Modules;
-using Artemis.Plugins.Mqtt.DataModels.Dynamic;
 
 namespace Artemis.Plugins.Mqtt.DataModels;
 
@@ -17,6 +16,9 @@ public class NodeDataModel : DataModel
     {
         ClearDynamicChildren();
         _allDynamicChildren.Clear();
+        
+        if (dataModelStructure.Children == null)
+            return;
         
         foreach (var childDefinition in dataModelStructure.Children)
         {
@@ -67,7 +69,7 @@ public class NodeDataModel : DataModel
                 boolChild.Value = string.Compare(data.ToString(), "true", StringComparison.OrdinalIgnoreCase) == 0;
                 return;
             case DynamicChild<string> stringChild:
-                stringChild.Value = data.ToString();
+                stringChild.Value = data.ToString()!;
                 return;
         }
     }
