@@ -18,10 +18,10 @@ public sealed class MqttConnector : IDisposable
 
     public MqttConnector()
     {
-        client = clientFactory.CreateManagedMqttClient();
-        client.ApplicationMessageReceivedAsync += OnClientMessageReceived;
-        client.ConnectedAsync += OnClientConnected;
-        client.DisconnectedAsync += OnClientDisconnected;
+        _client = ClientFactory.CreateManagedMqttClient();
+        _client.ApplicationMessageReceivedAsync += OnClientMessageReceived;
+        _client.ConnectedAsync += OnClientConnected;
+        _client.DisconnectedAsync += OnClientDisconnected;
     }
 
     /// <summary>
