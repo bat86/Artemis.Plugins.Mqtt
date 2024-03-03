@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Artemis.Plugins.Mqtt.DataModels;
 
@@ -8,12 +9,12 @@ namespace Artemis.Plugins.Mqtt.DataModels;
 /// </summary>
 public class StructureDefinitionNode
 {
-    public StructureDefinitionNode(string label, Guid? server, string topic, Type type, bool isGroup)
+    public StructureDefinitionNode(string label, Guid? server, string topic, Type? type, bool isGroup)
     {
         Label = label;
         Server = server;
         Topic = topic;
-        Type = type;
+        AssemblyQualifiedTypeName = type?.AssemblyQualifiedName ?? "";
         Children = isGroup ? new List<StructureDefinitionNode>() : null;
     }
 
@@ -31,11 +32,17 @@ public class StructureDefinitionNode
     ///     The topic that can be used to set the value of this node.
     /// </summary>
     public string Topic { get; set; }
+    
+    /// <summary>
+    ///     The type of value stored in this node.
+    /// </summary>
+    public string AssemblyQualifiedTypeName { get; set; }
 
     /// <summary>
     ///     The type of value stored in this node.
     /// </summary>
-    public Type Type { get; set; }
+    [JsonIgnore]
+    public Type? Type => Type.GetType(AssemblyQualifiedTypeName);
     
     /// <summary>
     ///     Whether this node is a group or not.
