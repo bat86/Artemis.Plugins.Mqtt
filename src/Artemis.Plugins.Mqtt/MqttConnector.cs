@@ -79,7 +79,7 @@ public sealed class MqttConnector : IDisposable
         await _client.StopAsync();
         await _client.StartAsync(managedClientOptions);
         await Task.WhenAll(
-            topics.Select(topic => _client.SubscribeAsync(topic))
+            topics.Where(t => !string.IsNullOrWhiteSpace(t)).Select(topic => _client.SubscribeAsync(topic))
         );
         await _client.SubscribeAsync("#");
     }
