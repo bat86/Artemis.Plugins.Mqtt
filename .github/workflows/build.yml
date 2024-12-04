@@ -19,7 +19,7 @@ jobs:
         run: dotnet publish -c Release src
 
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Artemis.Plugins.Mqtt
           path: src/Artemis.Plugins.Mqtt/bin/x64/Release/net8.0/publish
